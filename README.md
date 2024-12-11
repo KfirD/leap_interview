@@ -14,3 +14,5 @@ The "proof of concept.ipynb" notebook provides a basic skeleton for attacking re
 - Add code which automatically checks for and installs any missing libraries
 - Define clear functionality for the user
 - Add to documentation possible attack labels
+- Give user easy access to training parameters
+- Make code pep8 compliant
