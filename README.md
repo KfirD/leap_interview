@@ -5,7 +5,7 @@ The model which we consider is ResNet18 in the torchvision library (documentatio
 
 # Documentation
 
-Run `attack_image.py` as a standalone program to perform an adversarial attack on an image. Given an input image and a target label, the script generates a visually indistinguishable image that ResNet18 misclassifies as the specified target label.
+Run `run.py` as a standalone program to perform an adversarial attack on an image. Given an input image and a target label, the script generates a visually indistinguishable image that ResNet18 misclassifies as the specified target label.
 
 #### Command-Line Arguments:
 - `--image_path` (required): Specifies the path to the input image.
