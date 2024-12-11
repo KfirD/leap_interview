@@ -14,10 +14,13 @@ Run `attack_image.py` as a standalone program to perform an adversarial attack o
 
 
 
+See `labels.json` for list of allowed target labels.
+
+
+
 # TODO
 
 - Separate standalone program from importable library
-- Add functionality that says if attack failed or succeeded
 - Add code which automatically checks for and installs any missing libraries
 - Define clear functionality for the user
 - Add to documentation possible attack labels
