@@ -1,10 +1,8 @@
 import argparse
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-import torchvision.transforms as transforms
-from torchvision import transforms
+from torchvision.models import resnet18, ResNet18_Weights
 from PIL import Image
 import json
 import requests
@@ -19,10 +17,12 @@ from utils.image_display import *
 # main functionality
 # ================================
 
+
 def generate_attack_image(
     input_image: Image,
     attack_target: str, 
     ):
+    
     
     # proccess image for resnet18
     image_data = image_to_tensor(input_image)    
@@ -41,7 +41,6 @@ def generate_attack_image(
 
 # TODO get labels locally
 # TODO move training parameters to cfg class and make commandline args
-
 url = "https://raw.githubusercontent.com/anishathalye/imagenet-simple-labels/master/imagenet-simple-labels.json"
 labels = requests.get(url).json()
 
@@ -54,7 +53,7 @@ def get_target_idx(attack_target: str) -> int:
 def calculate_noise(image_data: torch.Tensor, attack_target: str) -> torch.Tensor:
     
     # intialize model
-    model = models.resnet18(pretrained=True)
+    model = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
     model.eval()
     
     # get index of target label
@@ -66,10 +65,10 @@ def calculate_noise(image_data: torch.Tensor, attack_target: str) -> torch.Tenso
     
     optimizer = torch.optim.AdamW([noise], lr=0.01)
     
-    l1_lambda = 0.01
+    l1_lambda = 0.1
     
     # train noise
-    for step in range(200):
+    for step in range(500):
         optimizer.zero_grad()
         logits = model(image_data + noise)
         
@@ -79,7 +78,7 @@ def calculate_noise(image_data: torch.Tensor, attack_target: str) -> torch.Tenso
         loss.backward()
         optimizer.step()
         
-        if step % 10 == 0:
+        if step % 50 == 0:
             print(f'step: {step}, loss: {loss}')
                         
     return noise
@@ -95,7 +94,7 @@ def attack_status(attack_image: Image, attack_target: str) -> bool:
     url = "https://raw.githubusercontent.com/anishathalye/imagenet-simple-labels/master/imagenet-simple-labels.json"
     labels = requests.get(url).json()
     
-    model = models.resnet18(pretrained=True)
+    model = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
     model.eval()
     
     attack_data = image_to_tensor(attack_image)
@@ -109,29 +108,3 @@ def attack_status(attack_image: Image, attack_target: str) -> bool:
     print(f'{attack_target=}')
     
     return predicted_label == attack_target
-    
-
-
-# TODO: fix targel_label attack_target inconsistancy
-def main():
-    # Parse command-line arguments for attack_image
-    parser = argparse.ArgumentParser(description="Given an image and a target label, generates image indistinguishable to human eye which resnet18 classifies as the target label.")
-    parser.add_argument('--image_path', type=str, required=True, help="Path to the input image.")
-    parser.add_argument('--target_label', type=str, required=True, help="Path to save output image.")
-    
-    args = parser.parse_args()
-
-    # load input image
-    input_image = Image.open(args.image_path)
-    processed_input_image = standardize_image(input_image)
-    
-    # generate attacked image
-    attack_image = generate_attack_image(input_image, args.target_label)
-
-    # show original and final image
-    show_images_side_by_side_with_labels(processed_input_image, "standardized input image", attack_image, "attack image")
-    
-    print(f'attack succeeded? {attack_status(attack_image, args.target_label)}')
-
-if __name__ == "__main__":
-    main()

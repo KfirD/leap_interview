@@ -9,20 +9,22 @@ Run `attack_image.py` as a standalone program to perform an adversarial attack o
 
 #### Command-Line Arguments:
 - `--image_path` (required): Specifies the path to the input image.
-- `--save_path` (required): Specifies the path where the output image will be saved.
 - `--target_label` (required): Specifies the target label that ResNet18 should classify the output image as.
 
 
 
-See `labels.json` for list of allowed target labels.
+See `data/labels.json` for list of allowed target labels.
+
+
+
+As an example, from the root directory run
+
+`python3 run.py --image_path data/grey.jpeg --target_label macaw` 
 
 
 
 # TODO
 
-- Separate standalone program from importable library
-- Add code which automatically checks for and installs any missing libraries
-- Define clear functionality for the user
-- Add to documentation possible attack labels
 - Give user easy access to training parameters
+- Add code which automatically checks for and installs any missing libraries
 - Make code pep8 compliant
