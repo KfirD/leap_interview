@@ -9,7 +9,6 @@ The "proof of concept.ipynb" notebook provides a basic skeleton for attacking re
 
 # TODO
 
-- Add loss L1 regularization to make final image look more realistic
 - Move code from jupyter notebook to python file
 - Add code which automatically checks for and installs any missing libraries
 - Define clear functionality for the user
